@@ -1,0 +1,16 @@
+[
+  {
+    "version": "1.0.0",
+    "changes": [
+      "Création de BloodSnow à partir des fonctions de modération d’Avrilou.",
+      "Bans permanents et temporaires, débans, expulsions, timeouts et avertissements.",
+      "Journaux des commandes, salons, rôles, messages, voix, intégrations et membres.",
+      "Exports de logs et de membres envoyés exclusivement par message privé à l’administrateur.",
+      "Commande /annonces : encadré rouge avec titre, image facultative et date ; commande /mp conservée.",
+      "Anti-raid : verrouillage à 8 arrivées en 15 secondes et ban des comptes de moins de 24 heures arrivés dans cette rafale, selon configuration.",
+      "Anti-applications : suppression des messages non autorisés, ban des bots non autorisés, listes d’autorisation pour bots et webhooks.",
+      "Suppression des réactions, blagues, discussions automatiques et anniversaires.",
+      "Journal des versions au premier démarrage et après chaque mise à jour ; état persistant et restauration des permissions de lockdown."
+    ]
+  }
+]
