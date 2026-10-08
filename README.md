@@ -68,3 +68,7 @@ Conserver `data/` sur un disque persistant : avertissements, bans temporaires, p
 `/publier message:... salon:...` envoie du texte normal sans embed, avec image jointe et réponse facultatives. Propriétaire et administrateurs uniquement. Le badge APP reste imposé par Discord. `/annonces` conserve son encadré.
 
 Les logs distinguent les mute/démute personnels, sourdines personnelles, mute/sourdines serveur, caméra, partage d’écran, connexions, départs et déplacements. Une connexion ou déconnexion ne constitue pas la preuve d’un changement manuel de mute. L’identité du modérateur dépend du journal d’audit ; elle n’est pas toujours disponible, notamment pour les déplacements/déconnexions. Le bot ne voit pas un mute matériel du micro, le volume local ou les actions survenues hors ligne.
+
+### Déverrouiller les salons
+
+`/unlock` restaure les permissions d’écriture antérieures des salons verrouillés par BloodSnow (administrateurs/propriétaire). Fonctionne aussi après redémarrage si `data/` a été conservé. `/lockdown action:off` reste compatible. Les salons initialement interdits restent interdits ; les verrous manuels ou d’autres bots ne sont pas modifiés. Les restaurations incomplètes sont signalées et peuvent être retentées.

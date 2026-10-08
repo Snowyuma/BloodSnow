@@ -9,7 +9,7 @@ const permissions: Record<string, bigint> = {
  annonces: PermissionFlagsBits.Administrator,
  ban: PermissionFlagsBits.BanMembers, unban: PermissionFlagsBits.BanMembers,
  expulser: PermissionFlagsBits.KickMembers, exclu: PermissionFlagsBits.ModerateMembers, unexclu: PermissionFlagsBits.ModerateMembers,
- export: PermissionFlagsBits.Administrator, exportmembres: PermissionFlagsBits.Administrator, nettoyer: PermissionFlagsBits.Administrator, lockdown: PermissionFlagsBits.Administrator,
+ export: PermissionFlagsBits.Administrator, exportmembres: PermissionFlagsBits.Administrator, nettoyer: PermissionFlagsBits.Administrator, lockdown: PermissionFlagsBits.Administrator, unlock: PermissionFlagsBits.Administrator,
  antiraid: PermissionFlagsBits.ManageGuild, "Informations du compte": PermissionFlagsBits.ManageGuild,
 };
 export const commands = [
@@ -86,6 +86,9 @@ export const commands = [
     .setDescription("Verrouille ou déverrouille les salons texte du serveur")
     .addStringOption((o) => o.setName("action").setDescription("Action").setRequired(true)
       .addChoices({ name: "Activer", value: "on" }, { name: "Désactiver", value: "off" })),
+  new SlashCommandBuilder()
+    .setName("unlock")
+    .setDescription("Déverrouille les salons verrouillés par BloodSnow et restaure leurs permissions"),
   new SlashCommandBuilder()
     .setName("antiraid")
     .setDescription("Affiche l'état de la protection anti-raid"),

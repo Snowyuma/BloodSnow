@@ -1,6 +1,6 @@
 {
   "name": "bloodsnow",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "type": "module",
   "description": "Bot Discord de moderation, annonces et protection anti-raid",

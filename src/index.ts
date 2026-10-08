@@ -57,6 +57,7 @@ const commandPermissions: Record<string, bigint> = {
   publier: PermissionFlagsBits.Administrator,
   annonces: PermissionFlagsBits.Administrator,
   lockdown: PermissionFlagsBits.Administrator,
+  unlock: PermissionFlagsBits.Administrator,
   antiraid: PermissionFlagsBits.ManageGuild,
   nettoyer: PermissionFlagsBits.Administrator,
   export: PermissionFlagsBits.Administrator,
@@ -645,12 +646,17 @@ export async function handleCommand(interaction: ChatInputCommandInteraction) {
     return interaction.editReply({ content: `Message publié dans <#${targetChannel.id}>.` });
   }
 
-  if (interaction.commandName === "lockdown") {
+  if (interaction.commandName === "lockdown" || interaction.commandName === "unlock") {
     if (!interaction.deferred) await interaction.deferReply({ flags: 64 });
-    const enabled = interaction.options.getString("action", true) === "on";
+    const enabled = interaction.commandName === "unlock" ? false : interaction.options.getString("action", true) === "on";
     const count = await setLockdown(interaction.guild, enabled);
-    await interaction.editReply(`${enabled ? "🔒 Serveur verrouillé" : "🔓 Serveur déverrouillé"} (${count} salons traités).`);
-    return log(interaction.guild, enabled ? "Lockdown activé" : "Lockdown désactivé", `Action manuelle par ${interaction.user.tag}.`, enabled ? 0xef4444 : 0x22c55e);
+    const remaining = Object.keys(state.locks[interaction.guild.id] ?? {}).length;
+    const result = enabled ? `🔒 Verrouillage : ${count} salon(s) traité(s).`
+      : remaining ? `⚠️ ${count} salon(s) restauré(s), ${remaining} restent à restaurer. Vérifie mes permissions et relance /unlock.`
+      : count ? `🔓 ${count} salon(s) déverrouillé(s) : permissions précédentes restaurées.`
+      : "Aucun salon verrouillé par BloodSnow à restaurer.";
+    await interaction.editReply(result);
+    return log(interaction.guild, enabled ? "Lockdown activé" : remaining ? "Déverrouillage incomplet" : "Lockdown désactivé", `Action manuelle par ${interaction.user.tag}.\n${result}`, enabled ? 0xef4444 : 0x22c55e);
   }
 
   if (interaction.commandName === "antiraid") {

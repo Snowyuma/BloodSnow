@@ -39,5 +39,12 @@
       "Logs vocaux personnels et serveur conservés ; les connexions/déconnexions ne génèrent plus de faux changements mute/démute.",
       "Le log précise lorsque l’auteur d’une action vocale ne peut pas être confirmé par le journal d’audit Discord."
     ]
+  },
+  {
+    "version": "1.0.4",
+    "changes": [
+      "Ajout de /unlock pour restaurer les permissions des salons verrouillés par BloodSnow, réservé au propriétaire et aux administrateurs.",
+      "/lockdown action:off reste disponible. Le résultat indique les salons restaurés et les éventuels échecs à retenter."
+    ]
   }
 ]
