@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 
 const permissions: Record<string, bigint> = {
+ annonces: PermissionFlagsBits.Administrator,
  ban: PermissionFlagsBits.BanMembers, unban: PermissionFlagsBits.BanMembers,
  expulser: PermissionFlagsBits.KickMembers, exclu: PermissionFlagsBits.ModerateMembers, unexclu: PermissionFlagsBits.ModerateMembers,
  export: PermissionFlagsBits.Administrator, exportmembres: PermissionFlagsBits.Administrator, nettoyer: PermissionFlagsBits.Administrator, lockdown: PermissionFlagsBits.Administrator,
@@ -68,7 +69,7 @@ export const commands = [
     .addStringOption((o) => o.setName("message").setDescription("Contenu de l'annonce").setRequired(true).setMaxLength(2000))
     .addStringOption((o) => o.setName("titre").setDescription("Titre de l’annonce").setMaxLength(256))
     .addChannelOption((o) => o.setName("salon").setDescription("Salon cible (par défaut : salon actuel)")
-      .addChannelTypes(0, 5))
+      .addChannelTypes(0, 2, 5, 10, 11, 12, 13))
     .addStringOption((o) => o.setName("message_id").setDescription("ID du message auquel le bot doit répondre"))
     .addAttachmentOption((o) => o.setName("image").setDescription("Image jointe à l'annonce"))
     .addStringOption((o) => o.setName("image_url").setDescription("URL HTTPS d'une image")),

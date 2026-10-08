@@ -53,7 +53,7 @@ const commandPermissions: Record<string, bigint> = {
   expulser: PermissionFlagsBits.KickMembers,
   exclu: PermissionFlagsBits.ModerateMembers,
   unexclu: PermissionFlagsBits.ModerateMembers,
-  annonces: PermissionFlagsBits.ManageMessages,
+  annonces: PermissionFlagsBits.Administrator,
   lockdown: PermissionFlagsBits.Administrator,
   antiraid: PermissionFlagsBits.ManageGuild,
   nettoyer: PermissionFlagsBits.Administrator,
@@ -587,12 +587,13 @@ export async function handleCommand(interaction: ChatInputCommandInteraction) {
   if (interaction.commandName === "annonces") {
     const selectedChannel = interaction.options.getChannel("salon");
     const targetChannel = await interaction.guild.channels.fetch(selectedChannel?.id ?? interaction.channelId).catch(() => null);
-    const allowedChannelIds = [...new Set([...guildConfig.announcementChannelIds, guildConfig.modLogChannelId])];
-    if (!targetChannel || !allowedChannelIds.includes(targetChannel.id)) {
-      const allowed = allowedChannelIds.map((id) => `<#${id}>`).join(", ");
-      return interaction.editReply({ content: `Ce salon n'est pas autorisé pour les publications.${allowed ? ` Salons autorisés : ${allowed}.` : ""}` });
-    }
     if (!targetChannel?.isTextBased() || !("send" in targetChannel)) return interaction.editReply({ content: "Le salon sélectionné ne permet pas l'envoi de messages." });
+    const bot = interaction.guild.members.me ?? await interaction.guild.members.fetchMe();
+    const permissions = targetChannel.permissionsFor(bot);
+    const sendPermission = targetChannel.isThread() ? PermissionFlagsBits.SendMessagesInThreads : PermissionFlagsBits.SendMessages;
+    if (!permissions?.has([PermissionFlagsBits.ViewChannel, sendPermission, PermissionFlagsBits.EmbedLinks])) {
+      return interaction.editReply({ content: "BloodSnow doit pouvoir voir ce salon, y envoyer des messages et intégrer des liens." });
+    }
     const message = interaction.options.getString("message", true);
     const replyToMessageId = interaction.options.getString("message_id")?.trim();
     const attachment = interaction.options.getAttachment("image");

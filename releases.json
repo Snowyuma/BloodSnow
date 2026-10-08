@@ -21,5 +21,13 @@
       "Le déploiement des commandes signale désormais un échec au terminal.",
       "Tests ajoutés pour les paramètres, l’identité du bot et les notes de version."
     ]
+  },
+  {
+    "version": "1.0.2",
+    "changes": [
+      "/annonces est accessible au propriétaire du serveur et aux administrateurs dans tous les salons où BloodSnow peut écrire, sans liste restrictive.",
+      "Prise en charge des fils et des salons vocaux disposant d’un chat textuel.",
+      "Vérification des permissions Voir le salon, Envoyer des messages et Intégrer des liens avant publication."
+    ]
   }
 ]

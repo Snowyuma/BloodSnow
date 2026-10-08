@@ -29,7 +29,7 @@ Renseigner le token du **nouveau** bot, son Application ID (`CLIENT_ID`), le ser
 - `/expulser`, `/exclu`, `/unexclu` : kick et timeout.
 - `/avertissement`, `/avertissements`, `/retireravertissement` : historique persistant.
 - `/mp`, `/testmp` : message privé et test des MP.
-- `/annonces` : titre, texte, image facultative, date, encadré rouge ; salons autorisés configurables, mentions désactivées.
+- `/annonces` : titre, texte, image facultative, date, encadré rouge ; accessible au propriétaire du serveur et aux administrateurs dans tout salon où le bot peut écrire, y compris les fils accessibles ; mentions désactivées.
 - `/nettoyer` : ban d’un ID et suppression de ses messages dans les salons accessibles et fils actifs ; signale les parcours incomplets. Les fils archivés ne sont pas parcourus.
 - `/export`, `/exportmembres` : administrateurs uniquement, fichiers exclusivement par MP. Si les MP sont fermés, aucun envoi dans le salon. Logs TXT et membres CSV avec protection contre les formules CSV.
 - `/lockdown`, `/antiraid` : verrouillage manuel et état des protections.
@@ -60,3 +60,5 @@ Conserver `data/` sur un disque persistant : avertissements, bans temporaires, p
 ### Diagnostic avant mise en service
 
 `npm run check:setup` affiche tous les paramètres manquants sans révéler le token. Le lancement et le déploiement vérifient que le token appartient bien à `CLIENT_ID`. Le déploiement retourne un code d’échec si Discord refuse les commandes.
+
+`ANNOUNCEMENT_CHANNEL_IDS` ne limite plus `/annonces` : cette liste ne sert que pour les salons supplémentaires où les administrateurs peuvent demander un export privé. Les forums ne peuvent pas recevoir directement un message : sélectionner un fil du forum.
