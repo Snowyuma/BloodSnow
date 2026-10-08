@@ -13,8 +13,8 @@ test("durées : refuse les valeurs dangereuses et accepte jours/minutes", () => 
 });
 test("commandes : outils attendus, aucune fonction ludique", () => {
   const names = commands.map(x => x.name);
-  for (const name of ["ban", "export", "exportmembres", "annonces", "mp", "lockdown"]) assert.ok(names.includes(name));
-  for (const name of ["publier", "creationanniv", "blague"]) assert.ok(!names.includes(name));
+  for (const name of ["ban", "export", "exportmembres", "annonces", "publier", "mp", "lockdown"]) assert.ok(names.includes(name));
+  for (const name of ["creationanniv", "blague"]) assert.ok(!names.includes(name));
   assert.equal(new Set(names).size, names.length);
 });
 test("ban temporaire : une échéance survit à une tentative et au redémarrage", async () => {

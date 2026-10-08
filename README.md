@@ -62,3 +62,9 @@ Conserver `data/` sur un disque persistant : avertissements, bans temporaires, p
 `npm run check:setup` affiche tous les paramètres manquants sans révéler le token. Le lancement et le déploiement vérifient que le token appartient bien à `CLIENT_ID`. Le déploiement retourne un code d’échec si Discord refuse les commandes.
 
 `ANNOUNCEMENT_CHANNEL_IDS` ne limite plus `/annonces` : cette liste ne sert que pour les salons supplémentaires où les administrateurs peuvent demander un export privé. Les forums ne peuvent pas recevoir directement un message : sélectionner un fil du forum.
+
+### Messages classiques et logs vocaux
+
+`/publier message:... salon:...` envoie du texte normal sans embed, avec image jointe et réponse facultatives. Propriétaire et administrateurs uniquement. Le badge APP reste imposé par Discord. `/annonces` conserve son encadré.
+
+Les logs distinguent les mute/démute personnels, sourdines personnelles, mute/sourdines serveur, caméra, partage d’écran, connexions, départs et déplacements. Une connexion ou déconnexion ne constitue pas la preuve d’un changement manuel de mute. L’identité du modérateur dépend du journal d’audit ; elle n’est pas toujours disponible, notamment pour les déplacements/déconnexions. Le bot ne voit pas un mute matériel du micro, le volume local ou les actions survenues hors ligne.

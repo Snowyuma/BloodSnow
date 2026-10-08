@@ -14,6 +14,7 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import type { GuildChannel, Message } from "discord.js";
+import { voiceChanges } from "./voice-log.js";
 import { assertBotIdentity } from "./identity.js";
 import { config, getGuildConfig } from "./config.js";
 import { announceRelease, loadState, state, saveState } from "./state.js";
@@ -53,6 +54,7 @@ const commandPermissions: Record<string, bigint> = {
   expulser: PermissionFlagsBits.KickMembers,
   exclu: PermissionFlagsBits.ModerateMembers,
   unexclu: PermissionFlagsBits.ModerateMembers,
+  publier: PermissionFlagsBits.Administrator,
   annonces: PermissionFlagsBits.Administrator,
   lockdown: PermissionFlagsBits.Administrator,
   antiraid: PermissionFlagsBits.ManageGuild,
@@ -584,6 +586,31 @@ export async function handleCommand(interaction: ChatInputCommandInteraction) {
     return log(interaction.guild, "Exclusion retirée", `${member.user.tag} (${member.id})\nMotif : ${reason}`, 0x22c55e);
   }
 
+  if (interaction.commandName === "publier") {
+    const selected = interaction.options.getChannel("salon");
+    const channel = await interaction.guild.channels.fetch(selected?.id ?? interaction.channelId).catch(() => null);
+    if (!channel?.isTextBased() || !("send" in channel)) return interaction.editReply({ content: "Ce salon ne permet pas d’envoyer un message." });
+    const content = interaction.options.getString("message", true).trim();
+    if (!content) return interaction.editReply({ content: "Le message ne peut pas être vide." });
+    const image = interaction.options.getAttachment("image");
+    if (image && !image.contentType?.startsWith("image/")) return interaction.editReply({ content: "La pièce jointe doit être une image." });
+    const bot = interaction.guild.members.me ?? await interaction.guild.members.fetchMe();
+    const needed = [PermissionFlagsBits.ViewChannel, channel.isThread() ? PermissionFlagsBits.SendMessagesInThreads : PermissionFlagsBits.SendMessages];
+    if (image) needed.push(PermissionFlagsBits.AttachFiles);
+    if (!channel.permissionsFor(bot)?.has(needed)) return interaction.editReply({ content: "BloodSnow n’a pas les permissions nécessaires pour écrire ou joindre une image dans ce salon." });
+    const payload = { content, files: image ? [image.url] : [], allowedMentions: { parse: [] as never[], repliedUser: false } };
+    const replyId = interaction.options.getString("message_id")?.trim();
+    let published;
+    if (replyId) {
+      if (!/^\d{17,20}$/.test(replyId) || !("messages" in channel)) return interaction.editReply({ content: "Identifiant du message invalide." });
+      const target = await channel.messages.fetch(replyId).catch(() => null);
+      if (!target) return interaction.editReply({ content: "Message introuvable dans le salon sélectionné." });
+      published = await target.reply(payload);
+    } else published = await channel.send(payload);
+    await activityLog(interaction.guild, "Message publié avec BloodSnow", `Administrateur : ${interaction.user} (${interaction.user.id})\nSalon : <#${channel.id}>\nMessage : ${published.url}\n${replyId ? `Réponse à : ${replyId}\n` : ""}Contenu : ${clipped(content, 2000)}`, 0x3b82f6);
+    return interaction.editReply({ content: `Message envoyé dans <#${channel.id}>.` });
+  }
+
   if (interaction.commandName === "annonces") {
     const selectedChannel = interaction.options.getChannel("salon");
     const targetChannel = await interaction.guild.channels.fetch(selectedChannel?.id ?? interaction.channelId).catch(() => null);
@@ -907,12 +934,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
 
   const member = newState.member ?? oldState.member;
   const identity = member ? `${member} (${member.user.tag} — ${member.id})` : `Membre ${newState.id}`;
-  const serverMuteChanged = oldState.serverMute !== newState.serverMute;
-  const serverDeafChanged = oldState.serverDeaf !== newState.serverDeaf;
-  const selfMuteChanged = oldState.selfMute !== newState.selfMute;
-  const selfDeafChanged = oldState.selfDeaf !== newState.selfDeaf;
-  const cameraChanged = oldState.selfVideo !== newState.selfVideo;
-  const streamChanged = oldState.streaming !== newState.streaming;
+  const { serverMuteChanged, serverDeafChanged, selfMuteChanged, selfDeafChanged, cameraChanged, streamChanged } = voiceChanges(oldState, newState);
 
   if (serverMuteChanged || serverDeafChanged) {
     const moderator = await auditExecutor(guild, AuditLogEvent.MemberUpdate, newState.id);
@@ -923,7 +945,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     await activityLog(
       guild,
       "Modération vocale",
-      `${identity}\n${actions.join("\n")}${newState.channelId ? `\nSalon : <#${newState.channelId}>` : ""}${moderator ? `\nModérateur : ${moderator}` : ""}`,
+      `${identity}\n${actions.join("\n")}${newState.channelId ? `\nSalon : <#${newState.channelId}>` : ""}${moderator ? `\nModérateur : ${moderator}` : "\nAuteur de l’action : non confirmé par le journal d’audit Discord"}`,
       newState.serverMute || newState.serverDeaf ? 0xef4444 : 0x22c55e,
     );
   }
@@ -955,7 +977,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     await activityLog(
       guild,
       moderator ? "Expulsion d'un salon vocal" : "Déconnexion vocale",
-      `${identity}\nAncien salon : <#${oldState.channelId}>${moderator ? `\nModérateur : ${moderator}` : ""}`,
+      `${identity}\nAncien salon : <#${oldState.channelId}>${moderator ? `\nModérateur : ${moderator}` : "\nAuteur de l’action : non confirmé par le journal d’audit Discord"}`,
       moderator ? 0xef4444 : 0x64748b,
     );
     return;
@@ -966,7 +988,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     await activityLog(
       guild,
       moderator ? "Membre déplacé par un modérateur" : "Changement de salon vocal",
-      `${identity}\nDe : <#${oldState.channelId}>\nVers : <#${newState.channelId}>${moderator ? `\nModérateur : ${moderator}` : ""}`,
+      `${identity}\nDe : <#${oldState.channelId}>\nVers : <#${newState.channelId}>${moderator ? `\nModérateur : ${moderator}` : "\nAuteur de l’action : non confirmé par le journal d’audit Discord"}`,
       moderator ? 0xf97316 : 0x3b82f6,
     );
   }

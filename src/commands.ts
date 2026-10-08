@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 
 const permissions: Record<string, bigint> = {
+ publier: PermissionFlagsBits.Administrator,
  annonces: PermissionFlagsBits.Administrator,
  ban: PermissionFlagsBits.BanMembers, unban: PermissionFlagsBits.BanMembers,
  expulser: PermissionFlagsBits.KickMembers, exclu: PermissionFlagsBits.ModerateMembers, unexclu: PermissionFlagsBits.ModerateMembers,
@@ -63,6 +64,13 @@ export const commands = [
     .setDescription("Retire l'exclusion temporaire d'un membre")
     .addUserOption((o) => o.setName("membre").setDescription("Membre à réintégrer").setRequired(true))
     .addStringOption((o) => o.setName("raison").setDescription("Motif de la réintégration").setMaxLength(512)),
+  new SlashCommandBuilder()
+    .setName("publier")
+    .setDescription("Envoie un message classique sans encadré sous le nom du bot")
+    .addStringOption(o => o.setName("message").setDescription("Texte du message").setRequired(true).setMaxLength(2000))
+    .addChannelOption(o => o.setName("salon").setDescription("Salon cible, ou salon actuel").addChannelTypes(0, 2, 5, 10, 11, 12, 13))
+    .addStringOption(o => o.setName("message_id").setDescription("ID du message auquel répondre"))
+    .addAttachmentOption(o => o.setName("image").setDescription("Image facultative jointe au message")),
   new SlashCommandBuilder()
     .setName("annonces")
     .setDescription("Publie une annonce sous l'identité du bot")

@@ -29,5 +29,15 @@
       "Prise en charge des fils et des salons vocaux disposant d’un chat textuel.",
       "Vérification des permissions Voir le salon, Envoyer des messages et Intégrer des liens avant publication."
     ]
+  },
+  {
+    "version": "1.0.3",
+    "changes": [
+      "Ajout de /publier : texte classique sans encadré, image facultative et réponse à un message, pour le propriétaire et les administrateurs dans tous les salons accessibles.",
+      "/annonces conserve sa présentation encadrée. Le badge APP Discord reste présent pour les deux commandes.",
+      "Les publications classiques réussies sont journalisées avec auteur, salon, lien et contenu.",
+      "Logs vocaux personnels et serveur conservés ; les connexions/déconnexions ne génèrent plus de faux changements mute/démute.",
+      "Le log précise lorsque l’auteur d’une action vocale ne peut pas être confirmé par le journal d’audit Discord."
+    ]
   }
 ]
