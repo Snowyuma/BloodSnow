@@ -1,6 +1,6 @@
 {
   "name": "bloodsnow",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "description": "Bot Discord de moderation, annonces et protection anti-raid",
@@ -11,7 +11,8 @@
     "build": "tsc",
     "check": "tsc --noEmit",
     "deploy:commands": "tsx src/deploy-commands.ts",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "check:setup": "tsx src/check-setup.ts"
   },
   "dependencies": {
     "discord.js": "^14.19.3",

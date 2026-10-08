@@ -10,6 +10,7 @@ Node.js 22.12 minimum (24 recommandé). Dans VS Code, ouvrir ce dossier.
 npm install
 Copy-Item .env.example .env
 # Compléter .env localement
+npm run check:setup
 npm run check
 npm run build
 npm run deploy:commands
@@ -55,3 +56,7 @@ Conserver `data/` sur un disque persistant : avertissements, bans temporaires, p
 ## Vérification
 
 `npm run check`, `npm test`, `npm run build`. Les tests utilisent des données temporaires et des objets Discord simulés, sans connexion ni sanction réelle. Valider ensuite dans un serveur de test les permissions, les MP fermés, la liste des bots autorisés et la restauration du lockdown avant utilisation en production.
+
+### Diagnostic avant mise en service
+
+`npm run check:setup` affiche tous les paramètres manquants sans révéler le token. Le lancement et le déploiement vérifient que le token appartient bien à `CLIENT_ID`. Le déploiement retourne un code d’échec si Discord refuse les commandes.

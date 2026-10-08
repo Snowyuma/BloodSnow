@@ -12,5 +12,14 @@
       "Suppression des réactions, blagues, discussions automatiques et anniversaires.",
       "Journal des versions au premier démarrage et après chaque mise à jour ; état persistant et restauration des permissions de lockdown."
     ]
+  },
+  {
+    "version": "1.0.1",
+    "changes": [
+      "Vérification locale de la configuration sans afficher les secrets avec check:setup.",
+      "Vérification de l’identité du token avant connexion et déploiement : empêche d’utiliser le token d’un autre bot.",
+      "Le déploiement des commandes signale désormais un échec au terminal.",
+      "Tests ajoutés pour les paramètres, l’identité du bot et les notes de version."
+    ]
   }
 ]

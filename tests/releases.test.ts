@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 test("journal : première installation, absence de doublon et nouvelle tentative après échec", async () => {
@@ -17,10 +17,11 @@ test("journal : première installation, absence de doublon et nouvelle tentative
     fail = false;
     await state.announceRelease(guild);
     assert.ok(sent[0].embeds[0].data.title.includes("première installation"));
-    assert.equal(sent.length, 2);
+    const releaseCount = JSON.parse(await readFile("releases.json", "utf8")).length;
+    assert.equal(sent.length, releaseCount + 1);
     await state.loadState();
     await state.announceRelease(guild);
-    assert.equal(sent.length, 3);
-    assert.equal(sent[2].embeds[0].data.title, "BloodSnow démarré");
+    assert.equal(sent.length, releaseCount + 2);
+    assert.equal(sent.at(-1).embeds[0].data.title, "BloodSnow démarré");
   } finally { await rm(dir, { recursive: true, force: true }); }
 });

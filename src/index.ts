@@ -1,5 +1,7 @@
 import {
   AuditLogEvent,
+  REST,
+  Routes,
   ChannelType,
   ChatInputCommandInteraction,
   Client,
@@ -12,6 +14,7 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import type { GuildChannel, Message } from "discord.js";
+import { assertBotIdentity } from "./identity.js";
 import { config, getGuildConfig } from "./config.js";
 import { announceRelease, loadState, state, saveState } from "./state.js";
 import { formatDuration, parseDuration } from "./durations.js";
@@ -1091,5 +1094,7 @@ if (process.env.NODE_ENV !== "test") {
   await loadScheduledBans();
   await loadWarnings();
   await loadState();
+  const identity = await new REST({ version: "10" }).setToken(config.token).get(Routes.user()) as { id: string; bot?: boolean };
+  assertBotIdentity(identity, config.clientId);
   await client.login(config.token);
 }
