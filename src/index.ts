@@ -1,3 +1,4 @@
+import { handlePanelCommand } from "./panel-admin.js";
 import { handleRoleButton } from "./role-panels.js";
 import {
   AuditLogEvent,
@@ -55,6 +56,7 @@ const commandPermissions: Record<string, bigint> = {
   expulser: PermissionFlagsBits.KickMembers,
   exclu: PermissionFlagsBits.ModerateMembers,
   unexclu: PermissionFlagsBits.ModerateMembers,
+  panneau: PermissionFlagsBits.Administrator,
   publier: PermissionFlagsBits.Administrator,
   annonces: PermissionFlagsBits.Administrator,
   lockdown: PermissionFlagsBits.Administrator,
@@ -420,6 +422,8 @@ export async function handleCommand(interaction: ChatInputCommandInteraction) {
   if (requiredPermission && !ownerAccess && !interaction.memberPermissions?.has(requiredPermission)) {
     return interaction.editReply({ content: "Tu n'as pas la permission nécessaire pour utiliser cette commande." });
   }
+
+  if (interaction.commandName === "panneau") return handlePanelCommand(interaction, activityLog);
 
   const target = interaction.options.getUser("membre")?.id ?? interaction.options.getString("utilisateur_id");
   if (target && ["ban", "expulser", "exclu", "unexclu", "nettoyer", "avertissement", "retireravertissement"].includes(interaction.commandName)) {

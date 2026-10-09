@@ -60,5 +60,13 @@
       "Panneaux persistants de règlement et de choix des rôles : acceptation du règlement et ajout/retrait des rôles de notifications par boutons.",
       "Réponses privées, contrôle des rôles autorisés et de la hiérarchie, journal des attributions et retraits."
     ]
+  },
+  {
+    "version": "1.0.7",
+    "changes": [
+      "Ajout de /panneau creer, modifier, bouton, retirer et lister, réservés aux administrateurs.",
+      "Panneaux personnalisables : texte, titre et image HTTPS ; jusqu’à 25 boutons colorés pour ajouter un rôle ou basculer son attribution.",
+      "Stockage persistant des panneaux, contrôle de la hiérarchie et refus des rôles privilégiés ; confirmations privées et logs des modifications."
+    ]
   }
 ]

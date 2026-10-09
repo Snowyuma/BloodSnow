@@ -1,3 +1,4 @@
+import { panelCommand } from "./panel-command.js";
 import {
   ApplicationCommandType,
   PermissionFlagsBits,
@@ -5,6 +6,7 @@ import {
 } from "discord.js";
 
 const permissions: Record<string, bigint> = {
+ panneau: PermissionFlagsBits.Administrator,
  publier: PermissionFlagsBits.Administrator,
  annonces: PermissionFlagsBits.Administrator,
  ban: PermissionFlagsBits.BanMembers, unban: PermissionFlagsBits.BanMembers,
@@ -13,6 +15,7 @@ const permissions: Record<string, bigint> = {
  antiraid: PermissionFlagsBits.ManageGuild, "Informations du compte": PermissionFlagsBits.ManageGuild,
 };
 export const commands = [
+ panelCommand,
   new SlashCommandBuilder()
     .setName("ban")
     .setDescription("Bannit un membre du serveur")

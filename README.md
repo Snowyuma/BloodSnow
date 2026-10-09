@@ -72,3 +72,16 @@ Les logs distinguent les mute/démute personnels, sourdines personnelles, mute/s
 ### Déverrouiller les salons
 
 `/unlock` restaure les permissions d’écriture antérieures des salons verrouillés par BloodSnow (administrateurs/propriétaire). Fonctionne aussi après redémarrage si `data/` a été conservé. `/lockdown action:off` reste compatible. Les salons initialement interdits restent interdits ; les verrous manuels ou d’autres bots ne sont pas modifiés. Les restaurations incomplètes sont signalées et peuvent être retentées.
+
+
+## Panneaux de rôles personnalisés (administrateurs)
+
+- `/panneau creer contenu:Bienvenue salon:#rôles titre:Choisis tes rôles` publie un message et répond en privé avec son identifiant. Sans titre ni image, le message est du texte classique. Avec un titre ou une image HTTPS, il devient un encadré. Écrire `\n` pour les sauts de ligne.
+- `/panneau bouton message_id:IDENTIFIANT role:@évènements texte:Évènements mode:toggle couleur:1` ajoute un bouton ou modifie celui de ce rôle. `toggle` ajoute/retire le rôle ; `add` ajoute uniquement (acceptation de règlement). Couleurs : 1 bleu, 2 gris, 3 vert, 4 rouge. Maximum 25 boutons, cinq par ligne.
+- `/panneau modifier message_id:IDENTIFIANT contenu:Nouveau texte` conserve les boutons ; `titre` et `image_url` sont facultatifs. `image_url:aucune` retire l’image.
+- `/panneau retirer message_id:IDENTIFIANT role:@évènements` retire uniquement le bouton, pas les rôles déjà attribués.
+- `/panneau lister` retrouve les liens et identifiants des panneaux du serveur.
+
+Les permissions administrateur sont vérifiées à chaque commande. Les rôles privilégiés, gérés par une application ou trop hauts dans la hiérarchie sont refusés. Les boutons ne peuvent attribuer que les rôles enregistrés pour leur message. Les confirmations sont privées et les changements sont journalisés. Aucune commande ne peut modifier les messages d’un autre bot.
+
+Conserver `DATA_DIR` (par défaut `data/`), notamment `role-panels.json`, lors des déploiements : il contient les identifiants persistants des panneaux. Ne pas remplacer ce dossier par un dossier vide. Les messages ne sont pas recréés au redémarrage. Déployer les commandes Discord après installation de cette version.
