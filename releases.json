@@ -53,5 +53,12 @@
       "Message de bienvenue dans le salon des arrivées : mention du membre, avatar, nombre de membres et liens utiles.",
       "Bienvenue désactivée pour les bots et les arrivées détectées comme une rafale anti-raid ; erreurs d’envoi signalées dans les logs."
     ]
+  },
+  {
+    "version": "1.0.6",
+    "changes": [
+      "Panneaux persistants de règlement et de choix des rôles : acceptation du règlement et ajout/retrait des rôles de notifications par boutons.",
+      "Réponses privées, contrôle des rôles autorisés et de la hiérarchie, journal des attributions et retraits."
+    ]
   }
 ]

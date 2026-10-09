@@ -1,3 +1,4 @@
+import { handleRoleButton } from "./role-panels.js";
 import {
   AuditLogEvent,
   REST,
@@ -743,6 +744,7 @@ client.once(Events.ClientReady, async (ready) => {
 
 client.on(Events.InteractionCreate, async (interaction) => {
   try {
+    if (interaction.isButton() && await handleRoleButton(interaction, activityLog)) return;
     if (interaction.isChatInputCommand()) {
       if (!interaction.deferred) await interaction.deferReply({ flags: 64 });
       if (interaction.guild && getGuildConfig(interaction.guild.id)) {
