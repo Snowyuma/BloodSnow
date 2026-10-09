@@ -867,6 +867,31 @@ client.on(Events.WebhooksUpdate, async (channel) => {
   await activityLog(channel.guild, "Webhooks modifiés", `Les webhooks de ${channel} (**${channel.name}** — ${channel.id}) ont été modifiés.`, 0x8b5cf6);
 });
 
+async function welcomeMember(member: import("discord.js").GuildMember) {
+  const channelId = getGuildConfig(member.guild.id)?.welcomeChannelId;
+  if (!channelId || member.user.bot) return;
+  try {
+    const channel = await member.guild.channels.fetch(channelId);
+    if (!channel?.isTextBased() || !("send" in channel)) throw new Error("Salon de bienvenue introuvable ou non textuel");
+    const links = member.guild.id === "1465840945001140247"
+      ? "\n\n📌 Consulte le <#1465852998818463744>\n🛠️ Choisis tes rôles dans <#1465853081534070874>\n💬 Viens nous dire bonjour dans <#1465840946192318662> !" : "";
+    await channel.send({
+      content: `Bienvenue <@${member.id}> ! ❄️`,
+      allowedMentions: { parse: [], users: [member.id] },
+      embeds: [new EmbedBuilder()
+        .setColor(0x8bd3f7)
+        .setTitle("❄️ Bienvenue dans l’igloo !")
+        .setDescription(`Heureux de t’accueillir sur **${member.guild.name}** ! Installe-toi au chaud et fais comme chez toi.${links}`)
+        .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
+        .setFooter({ text: `${member.guild.memberCount} membres • BloodSnow` })
+        .setTimestamp()],
+    });
+  } catch (error) {
+    console.error("Échec du message de bienvenue", error);
+    await activityLog(member.guild, "Bienvenue non envoyée", `Membre : <@${member.id}>\nSalon : <#${channelId}>\nVérifier le salon et les permissions Voir le salon, Envoyer des messages et Intégrer des liens.`, 0xf59e0b);
+  }
+}
+
 client.on(Events.GuildMemberAdd, async (member) => {
   const guildConfig = getGuildConfig(member.guild.id);
   if (!guildConfig) return;
@@ -874,7 +899,8 @@ client.on(Events.GuildMemberAdd, async (member) => {
   if (member.user.bot && guildConfig.antiApplicationsEnabled && !guildConfig.allowedBotIds.includes(member.id)) {
     await securityBan(member.guild, member.id, "Bot absent de la liste des bots autorisés"); return;
   }
-  if (!guildConfig.antiRaidEnabled || member.user.bot) return;
+  if (member.user.bot) return;
+  if (!guildConfig.antiRaidEnabled) { await welcomeMember(member); return; }
   const now = Date.now();
   const joins = (recentJoins.get(member.guild.id) ?? []).filter(time => now - time <= guildConfig.raidWindowMs);
   joins.push(now); recentJoins.set(member.guild.id, joins);
@@ -887,7 +913,9 @@ client.on(Events.GuildMemberAdd, async (member) => {
       if (!candidate.user.bot && candidate.joinedTimestamp && now - candidate.joinedTimestamp <= guildConfig.raidWindowMs && now - candidate.user.createdTimestamp < guildConfig.minAccountAgeMs)
         await securityBan(member.guild, candidate.id, "Compte récent arrivé pendant une rafale anti-raid");
     }
+    return;
   }
+  await welcomeMember(member);
 });
 
 client.on(Events.GuildMemberRemove, async (member) => {

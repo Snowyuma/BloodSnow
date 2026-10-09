@@ -6,6 +6,7 @@ const guild = {
   guildId: required("GUILD_ID"),
   modLogChannelId: required("MOD_LOG_CHANNEL_ID"),
   activityLogChannelId: process.env.ACTIVITY_LOG_CHANNEL_ID?.trim() || required("MOD_LOG_CHANNEL_ID"),
+  welcomeChannelId: process.env.WELCOME_CHANNEL_ID?.trim(),
   announcementChannelIds: ids("ANNOUNCEMENT_CHANNEL_IDS"),
   antiRaidEnabled: process.env.ANTI_RAID_ENABLED !== "false",
   raidJoinLimit: number("RAID_JOIN_LIMIT", 8),

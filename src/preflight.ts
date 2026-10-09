@@ -7,7 +7,7 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): string[] {
   for (const key of ["CLIENT_ID", "GUILD_ID", "MOD_LOG_CHANNEL_ID"]) {
     if (!/^\d{17,20}$/.test(env[key]?.trim() ?? "")) errors.push(`${key} : identifiant Discord manquant ou invalide`);
   }
-  for (const key of ["ACTIVITY_LOG_CHANNEL_ID", "ANNOUNCEMENT_CHANNEL_IDS", "ALLOWED_BOT_IDS", "ALLOWED_WEBHOOK_IDS"]) {
+  for (const key of ["WELCOME_CHANNEL_ID", "ACTIVITY_LOG_CHANNEL_ID", "ANNOUNCEMENT_CHANNEL_IDS", "ALLOWED_BOT_IDS", "ALLOWED_WEBHOOK_IDS"]) {
     for (const id of (env[key] ?? "").split(",").map(s => s.trim()).filter(Boolean)) {
       if (!/^\d{17,20}$/.test(id)) { errors.push(`${key} : identifiant Discord invalide`); break; }
     }
